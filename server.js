@@ -30,22 +30,21 @@ app.post("/stk", async (req, res) => {
 
     for (const phone of phoneList) {
       try {
-        const response = await axios.post(
-          "https://api.smartpaypesa.com/v1/initiatestk",
-          {
-            phone,
-            amount,
-            account_reference: reference,
-            description,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${process.env.API_KEY}`,
-            },
-          }
-        );
-
+const response = await axios({
+  method: "POST",
+  url: "https://api.smartpaypesa.com/v1/initiatestk",
+  headers: {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": process.env.API_KEY // 👈 remove Bearer
+  },
+  data: {
+    phone,
+    amount: Number(amount),
+    account_reference: reference,
+    description,
+  }
+});
         results.push({ phone, success: true, data: response.data });
       } catch (err) {
         results.push({
